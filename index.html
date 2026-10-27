@@ -1,0 +1,1035 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10263d">
+<title>SILKYSINGZ GEOAI | GAMBIA TOURIST INTELLIGENCE</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+<style>
+:root{
+ --navy:#10263d;--blue:#1769aa;--teal:#087f8c;
+ --gold:#e7a83e;--paper:#f3f6f9;--ink:#182634;
+ --muted:#647789;--line:#dce4eb;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;font-family:Segoe UI,Arial,sans-serif;background:var(--paper);color:var(--ink)}
+header{min-height:74px;background:linear-gradient(120deg,#10263d,#1769aa);color:white;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.flag{font-size:31px}
+.brand h1{font-size:18px;margin:0 0 4px}
+.brand p{font-size:11px;margin:0;color:#dcecf8}
+.status{font-size:11px;padding:7px 10px;border:1px solid #ffffff55;border-radius:20px}
+main{height:calc(100dvh - 74px);min-height:550px;display:grid;grid-template-columns:minmax(245px,1fr) minmax(300px,1.25fr) minmax(270px,1fr);gap:10px;padding:10px}
+.panel{background:white;border:1px solid var(--line);border-radius:12px;overflow:auto;min-height:0;box-shadow:0 2px 8px #10263d0a}
+.panel>h2{font-size:13px;margin:0;padding:13px;border-bottom:1px solid var(--line);color:var(--navy)}
+.section{padding:12px 13px;border-bottom:1px solid #edf1f5}
+.section h3{font-size:12px;margin:0 0 10px;color:var(--navy)}
+label{display:block;font-size:11px;font-weight:700;color:#405367;margin:0 0 6px}
+select,input,button{font:inherit}
+select,input[type=number],input[type=search]{width:100%;border:1px solid #cbd7e1;border-radius:7px;padding:9px;background:white;color:var(--ink);margin-bottom:9px;font-size:12px}
+input[type=range]{width:100%;accent-color:var(--blue)}
+button{border:0;border-radius:7px;padding:9px 10px;background:var(--blue);color:white;font-weight:700;cursor:pointer;margin:2px;font-size:11px}
+button:hover{filter:brightness(.94)}
+button.secondary{background:#e9f0f6;color:#193d5a}
+button.green{background:var(--teal)}
+button.orange{background:#d88b18}
+button:disabled{opacity:.5;cursor:wait}
+.btnrow{display:flex;flex-wrap:wrap;gap:4px}
+.btnrow button{flex:1;min-width:90px}
+.desc{font-size:11px;line-height:1.55;color:#405367}
+.muted{color:var(--muted);font-size:10px;line-height:1.55}
+.mapwrap{position:relative;min-width:0;min-height:0}
+#map{height:100%;width:100%;min-height:350px;border-radius:12px;overflow:hidden;background:#dbe5ec}
+.mapnote{position:absolute;z-index:500;left:10px;bottom:10px;background:#ffffffed;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:10px;max-width:250px;box-shadow:0 2px 8px #0002;pointer-events:none}
+.maptools{position:absolute;z-index:600;top:10px;right:10px;display:flex;gap:4px;flex-direction:column}
+.maptools button{box-shadow:0 2px 5px #0002}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px}
+.kpi{background:#f3f7fa;border:1px solid #e1e9ef;border-radius:8px;padding:9px;min-width:0}
+.kpi small{display:block;font-size:9px;color:var(--muted);margin-bottom:5px}
+.kpi strong{font-size:14px;color:var(--navy);overflow-wrap:anywhere}
+.chartbox{height:175px;position:relative;padding:6px 0}
+.chartbox canvas{width:100%!important;height:100%!important}
+.chart-note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:5px}
+.badge{display:inline-block;background:#e8f5f5;color:#086a73;padding:4px 7px;border-radius:20px;font-size:9px;font-weight:700;margin:2px}
+#directions{font-size:11px;line-height:1.6;max-height:250px;overflow:auto}
+#directions ol{padding-left:20px}
+#directions li{margin-bottom:5px}
+.footer{padding:12px;font-size:9px;color:#748596;line-height:1.6}
+.site-list{display:flex;flex-direction:column;gap:5px}
+.site-item{display:flex;align-items:center;gap:9px;padding:8px;border:1px solid #e6edf3;border-radius:9px;background:#fff;text-align:left;color:var(--ink);width:100%;margin:0}
+.site-item:hover{background:#f1f7fb}
+.site-symbol{width:38px;height:38px;flex:0 0 38px;border-radius:9px;background:#eaf4f8;display:grid;place-items:center;font-size:23px}
+.site-text{min-width:0}
+.site-text strong{display:block;font-size:11px;line-height:1.35}
+.site-text small{display:block;color:var(--muted);font-size:9px;line-height:1.4;margin-top:3px}
+.site-marker{background:transparent;border:0}
+.site-marker-inner{display:flex;align-items:center;justify-content:center;width:35px;height:35px;background:white;border:2px solid #1769aa;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);box-shadow:0 2px 5px #0003}
+.site-marker-inner span{transform:rotate(45deg);font-size:19px}
+.car-marker{font-size:29px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 2px 2px #0005);transform-origin:center}
+.legend{background:#fff;padding:8px 10px;border-radius:7px;box-shadow:0 1px 6px #0002;font-size:10px;line-height:1.8}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:5px;border-radius:50%}
+.gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px}
+.gallery-card{border:1px solid var(--line);border-radius:9px;overflow:hidden;cursor:pointer;background:#fff}
+.gallery-picture{height:65px;display:grid;place-items:center;font-size:36px;background:linear-gradient(135deg,#d7edf7,#f6e7bd)}
+.gallery-caption{padding:7px;font-size:10px;font-weight:700;line-height:1.35}
+.site-popup h3{margin:0 0 5px;font-size:13px}
+.site-popup p{margin:5px 0;font-size:11px;line-height:1.45}
+.site-popup button{margin-top:6px}
+.trip-box{background:#f2f7fa;border:1px solid #dfe8ef;border-radius:9px;padding:10px}
+.trip-box strong{font-size:12px}
+.trip-box p{font-size:10px;line-height:1.5;margin:6px 0}
+@media(max-width:1050px){
+ main{grid-template-columns:minmax(235px,1fr) minmax(300px,1.2fr);height:auto;min-height:calc(100dvh - 74px)}
+ .mapwrap{height:65vh;min-height:420px}
+ .right{grid-column:1/-1}
+}
+@media(max-width:650px){
+ header{min-height:68px;padding:10px}
+ .brand h1{font-size:14px}.brand p{font-size:10px}
+ .status{display:none}
+ main{display:flex;flex-direction:column;height:auto;min-height:0;padding:7px}
+ .panel{overflow:visible}
+ .mapwrap{height:58vh;min-height:380px;order:0}
+ .left{order:1}.right{order:2}
+ #map{min-height:380px}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="brand">
+  <div class="flag">GMB</div>
+  <div>
+   <h1>SILKYSINGZ GEOAI | GAMBIA TOURIST INTELLIGENCE</h1>
+   <p>Explore · Discover · GPS · Animated road trips · Weather · Terrain</p>
+  </div>
+ </div>
+ <div class="status" id="appStatus">Ready · Select a destination</div>
+</header>
+
+<main>
+<!-- LEFT: CONTROLS AND TOURIST DIRECTORY -->
+<section class="panel left">
+ <h2>🗺️ Explore The Gambia</h2>
+
+ <div class="section">
+  <label for="destination">Destination</label>
+  <select id="destination"></select>
+  <div class="desc" id="destinationDesc"></div>
+  <div class="btnrow" style="margin-top:8px">
+   <button id="goDestination">Go to destination</button>
+   <button id="weatherBtn" class="secondary">Refresh weather</button>
+  </div>
+ </div>
+
+ <div class="section">
+  <h3>🚗 Animated road journey</h3>
+  <div class="trip-box">
+   <strong id="tripState">Ready to travel</strong>
+   <p id="tripMessage">Calculate a road route, then start the animated journey.</p>
+   <div class="kpis" style="padding:0">
+    <div class="kpi"><small>Progress</small><strong id="tripProgress">0%</strong></div>
+    <div class="kpi"><small>Distance travelled</small><strong id="tripTravelled">0 km</strong></div>
+   </div>
+  </div>
+  <div class="btnrow" style="margin-top:8px">
+   <button id="startMove" class="green">▶ Start movement</button>
+   <button id="pauseMove" class="secondary">Ⅱ Pause</button>
+   <button id="resetMove" class="secondary">↺ Restart</button>
+  </div>
+  <label for="speed">Movement speed <span id="speedLabel">1×</span></label>
+  <input id="speed" type="range" min="1" max="5" value="1" step="1">
+  <label style="display:flex;align-items:center;gap:7px;font-weight:500">
+   <input id="followCar" type="checkbox" checked style="width:auto;margin:0">
+   Follow moving car on map
+  </label>
+  <p class="muted">The car follows the calculated road geometry. Animation speed is illustrative, not a live vehicle speed or navigation instruction.</p>
+ </div>
+
+ <div class="section">
+  <h3>📍 GPS location capture</h3>
+  <div class="btnrow">
+   <button id="gpsBtn" class="green">Capture GPS</button>
+   <button id="stopGps" class="secondary">Stop tracking</button>
+  </div>
+  <label for="gpsTimeout">GPS timeout</label>
+  <select id="gpsTimeout">
+   <option value="20">20 seconds</option>
+   <option value="30" selected>30 seconds</option>
+   <option value="60">60 seconds</option>
+  </select>
+  <div class="kpis" style="padding:0">
+   <div class="kpi"><small>Latitude</small><strong id="gpsLat">—</strong></div>
+   <div class="kpi"><small>Longitude</small><strong id="gpsLon">—</strong></div>
+   <div class="kpi"><small>Reported accuracy</small><strong id="gpsAcc">—</strong></div>
+   <div class="kpi"><small>Altitude</small><strong id="gpsAlt">—</strong></div>
+  </div>
+  <div id="gpsTime" class="muted" style="margin-top:8px">No location captured.</div>
+  <div class="btnrow" style="margin-top:7px">
+   <button id="useGps" class="secondary">Use GPS as start</button>
+   <button id="copyGps" class="secondary">Copy coordinates</button>
+  </div>
+ </div>
+
+ <div class="section">
+  <h3>🧭 Road route planning</h3>
+  <label for="startPoint">Route start</label>
+  <select id="startPoint">
+   <option value="gps">Captured GPS / selected map point</option>
+   <option value="13.4549,-16.5790">Banjul</option>
+   <option value="13.4432,-16.6810">Kololi / Senegambia</option>
+   <option value="13.2580,-16.6460">Brikama</option>
+   <option value="13.5660,-14.7660">Basse Santa Su</option>
+  </select>
+  <div class="btnrow">
+   <button id="routeBtn">Plan route</button>
+   <button id="clearRoute" class="secondary">Clear route</button>
+  </div>
+  <div class="btnrow">
+   <button id="exportGpx" class="secondary">Export GPX</button>
+   <button id="fitBtn" class="secondary">Fit map</button>
+  </div>
+  <p class="muted">Road routes use the public OSRM routing service. No live traffic or road closure feed is included.</p>
+ </div>
+
+ <div class="section">
+  <h3>🗺️ Basemap</h3>
+  <label for="basemap">Choose map style</label>
+  <select id="basemap">
+   <option value="street">Street map</option>
+   <option value="satellite">Satellite imagery</option>
+   <option value="topo" selected>Topographic map</option>
+   <option value="dark">Dark map</option>
+  </select>
+  <div class="muted">Tourist-site markers remain visible when changing the basemap.</div>
+ </div>
+
+ <div class="section">
+  <h3>📚 Tourist-site directory</h3>
+  <label for="siteSearch">Search sites</label>
+  <input id="siteSearch" type="search" placeholder="Search a site, town or category…">
+  <div id="siteCount" class="muted" style="margin-bottom:8px"></div>
+  <div id="siteList" class="site-list"></div>
+  <p class="muted" style="margin-top:9px">The directory is a curated starter list, not an exhaustive official national inventory. Coordinates and access should be verified before field use.</p>
+ </div>
+</section>
+
+<!-- CENTRE: INTERACTIVE MAP -->
+<div class="mapwrap">
+ <div id="map"></div>
+ <div class="maptools">
+  <button id="showAllSites">📍 Show all sites</button>
+  <button id="toggleSites" class="secondary">Hide site markers</button>
+ </div>
+ <div class="mapnote">🚗 Animated car follows the road route when a route is available. Click a tourist marker to view its description.</div>
+</div>
+
+<!-- RIGHT: ANALYTICS -->
+<section class="panel right">
+ <h2>📊 Tourist intelligence & analytics</h2>
+ <div class="kpis">
+  <div class="kpi"><small>Destination</small><strong id="kDest">Banjul</strong></div>
+  <div class="kpi"><small>Elevation</small><strong id="elevation">—</strong></div>
+  <div class="kpi"><small>Temperature</small><strong id="temperature">—</strong></div>
+  <div class="kpi"><small>Wind speed</small><strong id="wind">—</strong></div>
+  <div class="kpi"><small>Route distance</small><strong id="routeDistance">—</strong></div>
+  <div class="kpi"><small>Estimated travel time</small><strong id="routeTime">—</strong></div>
+ </div>
+
+ <div class="section">
+  <h3>🌦️ Five-day weather forecast</h3>
+  <div class="chartbox"><canvas id="weatherChart"></canvas></div>
+  <div class="chart-note" id="weatherNote">Select a destination to load the forecast.</div>
+ </div>
+
+ <div class="section">
+  <h3>⛰️ Route elevation profile</h3>
+  <div class="chartbox"><canvas id="elevChart"></canvas></div>
+  <div class="chart-note" id="elevNote">Plan a route to sample terrain elevations.</div>
+ </div>
+
+ <div class="section">
+  <h3>🧭 Turn-by-turn directions</h3>
+  <div id="directions" class="muted">Choose a start and destination, then click Plan route.</div>
+ </div>
+
+ <div class="section">
+  <h3>🧩 Map legend</h3>
+  <div class="legend">
+   <div>📍 Tourist attraction</div>
+   <div>🚗 Moving route vehicle</div>
+   <div><i style="background:#087f8c"></i>Calculated road route</div>
+   <div>🛰️ Captured GPS / manual start point</div>
+   <div>🔵 GPS accuracy circle</div>
+  </div>
+ </div>
+
+ <div class="section">
+  <h3>🖼️ Tourist-site gallery</h3>
+  <div class="muted">Select any card to locate the attraction on the map.</div>
+  <div class="gallery" id="gallery"></div>
+ </div>
+
+ <div class="section">
+  <h3>ℹ️ Destination information</h3>
+  <div id="locationDetails" class="desc"></div>
+  <div style="margin-top:8px">
+   <span class="badge">OpenStreetMap</span>
+   <span class="badge">OSRM</span>
+   <span class="badge">Open-Meteo</span>
+   <span class="badge">OpenTopoData</span>
+  </div>
+ </div>
+
+ <div class="footer">
+  GBoS GEOAI · Research and educational use.<br>
+  Produced by Ansu Singhateh ·GIS Analyst · GIS-Cartography Unit, Gambia Bureau of Statistics <br>
+  Not an official emergency navigation service. Map data © OpenStreetMap contributors. Weather, routes and elevation depend on external services.
+ </div>
+</section>
+</main>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const DEFAULT_VIEW=[13.45,-16.58];
+const DEFAULT_ZOOM=9;
+
+/*
+ Curated tourist-site starter dataset.
+ Pictograms are illustrative symbols, not photographs of the actual sites.
+ Coordinates are approximate visitor-location points; verify before operational use.
+*/
+const SITES=[
+ {id:"banjul",name:"Arch 22",town:"Banjul",category:"History & landmarks",icon:"🏛️",lat:13.4549,lon:-16.5790,desc:"A landmark monument associated with the capital and national history."},
+ {id:"market",name:"Albert Market",town:"Banjul",category:"Culture & shopping",icon:"🛍️",lat:13.4562,lon:-16.5798,desc:"A busy traditional market for local goods, fabrics, crafts and everyday commerce."},
+ {id:"museum",name:"National Museum of The Gambia",town:"Banjul",category:"History & culture",icon:"🏺",lat:13.4533,lon:-16.5782,desc:"Museum collections relating to Gambian history and culture. Check opening times before visiting."},
+ {id:"kachikally",name:"Kachikally Crocodile Pool",town:"Bakau",category:"Culture & wildlife",icon:"🐊",lat:13.4318,lon:-16.6810,desc:"A cultural site in Bakau associated with a sacred pool and resident crocodiles."},
+ {id:"senegambia",name:"Senegambia Strip",town:"Kololi",category:"Beach & nightlife",icon:"🏖️",lat:13.4432,lon:-16.6810,desc:"A popular visitor area with accommodation, restaurants, shops and nightlife."},
+ {id:"bijilo",name:"Bijilo Forest Park",town:"Bijilo",category:"Wildlife & nature",icon:"🐒",lat:13.4300,lon:-16.7200,desc:"A coastal forest reserve known for nature trails and wildlife. Follow park guidance."},
+ {id:"tanji",name:"Tanji Fishing Village",town:"Tanji",category:"Fishing & local life",icon:"🎣",lat:13.4080,lon:-16.7480,desc:"A coastal fishing community with colourful boats, a fish market and local livelihoods."},
+ {id:"sanyang",name:"Sanyang Beach",town:"Sanyang",category:"Beaches & coast",icon:"🌊",lat:13.3070,lon:-16.7280,desc:"An Atlantic beach destination with sand, sea views and local restaurants."},
+ {id:"brikama",name:"Brikama Craft Market",town:"Brikama",category:"Arts & crafts",icon:"🎨",lat:13.2580,lon:-16.6460,desc:"Brikama is known for craft traditions, woodcarving and local markets."},
+ {id:"abuko",name:"Abuko Nature Reserve",town:"Abuko",category:"Wildlife & nature",icon:"🦜",lat:13.4667,lon:-16.5667,desc:"A protected nature area associated with woodland, wetland habitats and wildlife."},
+ {id:"makasutu",name:"Makasutu Culture Forest",town:"Near Brikama",category:"Nature & culture",icon:"🌴",lat:13.3300,lon:-16.6500,desc:"A nature and cultural tourism destination near the Mandina waterways. Confirm access before travelling."},
+ {id:"kartong",name:"Kartong Beach",town:"Kartong",category:"Beach & eco-tourism",icon:"🐚",lat:13.3500,lon:-16.7333,desc:"A southern coastal settlement with beaches, estuary habitats and community tourism."},
+ {id:"tujereng",name:"Tujereng Beach",town:"Tujereng",category:"Beaches & coast",icon:"🏝️",lat:13.3740,lon:-16.7580,desc:"A coastal community with sandy shoreline and ocean scenery."},
+ {id:"cape",name:"Cape Point",town:"Bakau",category:"Coastal views",icon:"🌅",lat:13.4780,lon:-16.6950,desc:"A coastal area near the mouth of the Gambia River, known for sea and river views."},
+ {id:"juffureh",name:"Juffureh",town:"North Bank Region",category:"History & heritage",icon:"📜",lat:13.3350,lon:-16.3850,desc:"A historic settlement associated with heritage tourism and the story of Kunta Kinteh."},
+ {id:"albreda",name:"Albreda",town:"North Bank Region",category:"History & heritage",icon:"🏚️",lat:13.3355,lon:-16.3890,desc:"A historic riverside settlement associated with the area's Atlantic history."},
+ {id:"fortjames",name:"Kunta Kinteh Island",town:"River Gambia",category:"UNESCO heritage",icon:"🏰",lat:13.3160,lon:-16.3570,desc:"Historic island and heritage site associated with the history of the Atlantic slave trade. Boat access and site conditions need checking."},
+ {id:"farafenni",name:"Farafenni",town:"North Bank Region",category:"Town & local culture",icon:"🏘️",lat:13.5660,lon:-15.6000,desc:"A major North Bank town and transport hub."},
+ {id:"wassu",name:"Wassu Stone Circles",town:"Central River Region",category:"Archaeology & heritage",icon:"🪨",lat:13.6910,lon:-14.8780,desc:"A renowned megalithic stone-circle complex and archaeological heritage destination."},
+ {id:"kuntaur",name:"Kuntaur",town:"Central River Region",category:"River tourism",icon:"🛶",lat:13.6700,lon:-14.8900,desc:"A riverside settlement used as a base for exploring the central river area."},
+ {id:"janjanbureh",name:"Janjanbureh",town:"Central River Region",category:"History & river",icon:"🏞️",lat:13.4890,lon:-16.0940,desc:"A historic island town with river scenery and cultural heritage."},
+ {id:"riverpark",name:"River Gambia National Park",town:"Central River Region",category:"Wildlife & conservation",icon:"🦛",lat:13.5700,lon:-14.9500,desc:"A protected river-island area known for wildlife conservation. Access and permissions should be confirmed."},
+ {id:"basse",name:"Basse Santa Su",town:"Upper River Region",category:"Town & river",icon:"⛵",lat:13.5660,lon:-14.7660,desc:"An eastern commercial centre near the upper reaches of the Gambia River."},
+ {id:"georgetown",name:"Georgetown Riverside",town:"Janjanbureh",category:"River & heritage",icon:"🚣",lat:13.4890,lon:-16.0940,desc:"Explore the historic river town and its surrounding landscapes."},
+ {id:"gambiaRiver",name:"Gambia River Viewpoint",town:"River Gambia",category:"River landscape",icon:"🌊",lat:13.5000,lon:-16.2500,desc:"A general river-view location. This marker is illustrative and is not an official viewpoint."},
+ {id:"serekunda",name:"Serekunda Market Area",town:"Serekunda",category:"Culture & shopping",icon:"🧺",lat:13.4380,lon:-16.6780,desc:"A busy urban area with markets, local commerce and everyday Gambian city life."},
+ {id:"fajara",name:"Fajara Coast",town:"Fajara",category:"Coastal leisure",icon:"🌴",lat:13.4720,lon:-16.6900,desc:"A coastal area with beaches and visitor accommodation."},
+ {id:"gunjur",name:"Gunjur Beach",town:"Gunjur",category:"Beaches & community",icon:"🐢",lat:13.1760,lon:-16.7630,desc:"A southern coastal community with beach landscapes and community conservation initiatives."},
+ {id:"ginak",name:"Ginak Island Area",town:"North Bank Region",category:"Nature & coastal landscapes",icon:"🦩",lat:13.5500,lon:-16.5000,desc:"A general island/coastal area marker. Access can depend on tides, transport and local conditions."},
+ {id:"kiang",name:"Kiang West National Park",town:"Lower River Region",category:"Wildlife & conservation",icon:"🐾",lat:13.3500,lon:-15.9000,desc:"A protected area in the Lower River Region. Confirm authorised access and local guidance."},
+ {id:"baobolong",name:"Bao Bolong Wetland Reserve",town:"North Bank Region",category:"Wetlands & birdlife",icon:"🦆",lat:13.5500,lon:-15.8500,desc:"A wetland reserve associated with birdlife and riverine habitats. Access and seasonal conditions vary."}
+];
+
+const DESTINATIONS=[
+ ...SITES.filter(s=>!["market","museum","albreda","fortjames","riverpark","georgetown","gambiaRiver","fajara","ginak"].includes(s.id)),
+ {id:"sanyangBeach",name:"Sanyang Beach",town:"Sanyang",category:"Beach & coast",icon:"🏖️",lat:13.3070,lon:-16.7280,desc:"A popular Atlantic beach area."}
+];
+
+const map=L.map("map").setView(DEFAULT_VIEW,DEFAULT_ZOOM);
+
+const tileLayers={
+ street:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}),
+ satellite:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Tiles © Esri"}),
+ topo:L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",{maxZoom:17,attribution:"© OpenTopoMap contributors"}),
+ dark:L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"© OpenStreetMap © CARTO"})
+};
+tileLayers.topo.addTo(map);
+
+let destinationMarker=null;
+let gpsMarker=null;
+let gpsCircle=null;
+let gpsPosition=null;
+let watchId=null;
+let routingControl=null;
+let routeCoordinates=[];
+let routeCumulative=[];
+let routeLengthMetres=0;
+let carMarker=null;
+let animationFrame=null;
+let lastAnimationTimestamp=null;
+let travelledMetres=0;
+let moving=false;
+let siteLayer=L.layerGroup().addTo(map);
+let sitesVisible=true;
+let weatherChart=null;
+let elevChart=null;
+let elevationRequestId=0;
+
+const destinationIcon=L.divIcon({
+ className:"",
+ html:'<div style="font-size:28px;text-shadow:0 1px 3px white">📍</div>',
+ iconSize:[30,34],iconAnchor:[15,29]
+});
+const gpsIcon=L.divIcon({
+ className:"",
+ html:'<div style="font-size:27px">🛰️</div>',
+ iconSize:[30,30],iconAnchor:[15,26]
+});
+
+function setStatus(message){$("appStatus").textContent=message}
+function fmtCoord(value){return Number.isFinite(value)?Number(value).toFixed(6):"—"}
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function getDestinationById(id){
+ return SITES.find(s=>s.id===id)||DESTINATIONS.find(d=>d.id===id)||SITES[0];
+}
+function selectedDestination(){
+ const opt=$("destination").selectedOptions[0];
+ const site=getDestinationById(opt.value);
+ return site||SITES[0];
+}
+function fillDestinationOptions(){
+ $("destination").innerHTML="";
+ const groups={};
+ DESTINATIONS.forEach(site=>{
+  const group=site.category||"Other";
+  if(!groups[group]) groups[group]=[];
+  groups[group].push(site);
+ });
+ Object.keys(groups).sort().forEach(group=>{
+  const og=document.createElement("optgroup");
+  og.label=group;
+  groups[group].forEach(site=>{
+   const option=document.createElement("option");
+   option.value=site.id;
+   option.textContent=site.icon+" "+site.name+" — "+site.town;
+   og.appendChild(option);
+  });
+  $("destination").appendChild(og);
+ });
+ $("destination").value="banjul";
+}
+
+function makeSiteIcon(site){
+ return L.divIcon({
+  className:"site-marker",
+  html:'<div class="site-marker-inner"><span>'+site.icon+'</span></div>',
+  iconSize:[35,35],iconAnchor:[12,34],popupAnchor:[7,-30]
+ });
+}
+
+function sitePopup(site){
+ const div=document.createElement("div");
+ div.className="site-popup";
+ const title=document.createElement("h3");
+ title.textContent=site.icon+" "+site.name;
+ const town=document.createElement("div");
+ town.style.cssText="font-size:10px;color:#647789";
+ town.textContent=site.town+" · "+site.category;
+ const desc=document.createElement("p");
+ desc.textContent=site.desc;
+ const btn=document.createElement("button");
+ btn.textContent="Set as destination";
+ btn.addEventListener("click",()=>{
+  if(DESTINATIONS.some(d=>d.id===site.id)){
+   $("destination").value=site.id;
+  }else{
+   let option=Array.from($("destination").options).find(o=>o.value===site.id);
+   if(!option){
+    option=document.createElement("option");
+    option.value=site.id;
+    option.textContent=site.icon+" "+site.name+" — "+site.town;
+    $("destination").appendChild(option);
+   }
+   $("destination").value=site.id;
+  }
+  updateDestination();
+  map.setView([site.lat,site.lon],14);
+  $("destinationDesc").scrollIntoView({behavior:"smooth",block:"nearest"});
+ });
+ div.append(title,town,desc,btn);
+ return div;
+}
+
+function addAllSiteMarkers(){
+ siteLayer.clearLayers();
+ SITES.forEach(site=>{
+  const marker=L.marker([site.lat,site.lon],{icon:makeSiteIcon(site)});
+  marker.bindPopup(()=>sitePopup(site));
+  marker.bindTooltip(site.name,{direction:"top",offset:[0,-24]});
+  marker.addTo(siteLayer);
+ });
+}
+
+function renderSiteList(){
+ const query=$("siteSearch").value.trim().toLowerCase();
+ const filtered=SITES.filter(site=>
+  (site.name+" "+site.town+" "+site.category+" "+site.desc).toLowerCase().includes(query)
+ );
+ $("siteCount").textContent=filtered.length+" sites shown · "+SITES.length+" in this curated list";
+ const list=$("siteList");
+ list.replaceChildren();
+
+ filtered.forEach(site=>{
+  const btn=document.createElement("button");
+  btn.className="site-item";
+  const icon=document.createElement("span");
+  icon.className="site-symbol";
+  icon.textContent=site.icon;
+  const info=document.createElement("span");
+  info.className="site-text";
+  const title=document.createElement("strong");
+  title.textContent=site.name;
+  const meta=document.createElement("small");
+  meta.textContent=site.town+" · "+site.category;
+  info.append(title,meta);
+  btn.append(icon,info);
+  btn.addEventListener("click",()=>{
+   map.setView([site.lat,site.lon],14);
+   const marker=siteLayer.getLayers().find(m=>{
+    const p=m.getLatLng();
+    return Math.abs(p.lat-site.lat)<0.00001&&Math.abs(p.lng-site.lon)<0.00001;
+   });
+   if(marker) marker.openPopup();
+  });
+  list.appendChild(btn);
+ });
+}
+
+function renderGallery(){
+ const gallery=$("gallery");
+ gallery.replaceChildren();
+ const featured=["banjul","kachikally","senegambia","fortjames","abuko","kartong","wassu","bijilo"];
+ featured.forEach(id=>{
+  const site=SITES.find(s=>s.id===id);
+  if(!site)return;
+  const card=document.createElement("div");
+  card.className="gallery-card";
+  const picture=document.createElement("div");
+  picture.className="gallery-picture";
+  picture.textContent=site.icon;
+  const caption=document.createElement("div");
+  caption.className="gallery-caption";
+  caption.textContent=site.name;
+  card.append(picture,caption);
+  card.addEventListener("click",()=>{
+   map.setView([site.lat,site.lon],14);
+   const marker=siteLayer.getLayers().find(m=>{
+    const p=m.getLatLng();
+    return Math.abs(p.lat-site.lat)<0.00001&&Math.abs(p.lng-site.lon)<0.00001;
+   });
+   if(marker)marker.openPopup();
+  });
+  gallery.appendChild(card);
+ });
+}
+
+function showDestinationMarker(d){
+ if(destinationMarker)map.removeLayer(destinationMarker);
+ destinationMarker=L.marker([d.lat,d.lon],{icon:destinationIcon})
+  .addTo(map).bindPopup("<b>"+escapeHtml(d.name)+"</b><br>"+escapeHtml(d.desc));
+}
+function updateDestination(){
+ const d=selectedDestination();
+ $("destinationDesc").textContent=d.desc;
+ $("kDest").textContent=d.name;
+ $("locationDetails").textContent=d.desc+" Coordinates: "+fmtCoord(d.lat)+", "+fmtCoord(d.lon)+". Coordinates are approximate and should be verified before operational use.";
+ showDestinationMarker(d);
+ loadWeather(d.lat,d.lon);
+ loadPointElevation(d.lat,d.lon);
+}
+$("destination").addEventListener("change",updateDestination);
+$("siteSearch").addEventListener("input",renderSiteList);
+$("goDestination").addEventListener("click",()=>{
+ const d=selectedDestination();
+ map.setView([d.lat,d.lon],14);
+ if(destinationMarker)destinationMarker.openPopup();
+});
+$("weatherBtn").addEventListener("click",()=>{
+ const d=selectedDestination();
+ loadWeather(d.lat,d.lon);
+});
+$("basemap").addEventListener("change",()=>{
+ Object.values(tileLayers).forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
+ tileLayers[$("basemap").value].addTo(map);
+});
+$("showAllSites").addEventListener("click",()=>{
+ if(!sitesVisible){siteLayer.addTo(map);sitesVisible=true;$("toggleSites").textContent="Hide site markers"}
+ const bounds=L.latLngBounds(SITES.map(s=>[s.lat,s.lon]));
+ map.fitBounds(bounds.pad(.08));
+});
+$("toggleSites").addEventListener("click",()=>{
+ if(sitesVisible){map.removeLayer(siteLayer);sitesVisible=false;$("toggleSites").textContent="Show site markers"}
+ else{siteLayer.addTo(map);sitesVisible=true;$("toggleSites").textContent="Hide site markers"}
+});
+
+/* GPS capture */
+function geoOptions(){
+ return {enableHighAccuracy:true,maximumAge:0,timeout:Number($("gpsTimeout").value)*1000};
+}
+function handleGpsError(error){
+ const messages={
+ 1:"Location permission denied. Allow location access in your browser.",
+ 2:"Position unavailable. Move to an open area and retry.",
+ 3:"GPS request timed out. Try a longer timeout."
+ };
+ $("gpsTime").textContent=messages[error.code]||error.message||"Unable to obtain GPS position.";
+ setStatus("GPS error");
+}
+function captureGps(position,centerMap=true){
+ const c=position.coords,lat=c.latitude,lon=c.longitude,accuracy=c.accuracy;
+ if(!Number.isFinite(lat)||!Number.isFinite(lon)){setStatus("Invalid GPS coordinates");return}
+ gpsPosition={lat,lon,accuracy,altitude:c.altitude,altitudeAccuracy:c.altitudeAccuracy,timestamp:position.timestamp};
+ $("gpsLat").textContent=fmtCoord(lat);
+ $("gpsLon").textContent=fmtCoord(lon);
+ $("gpsAcc").textContent=Number.isFinite(accuracy)?"±"+Math.round(accuracy)+" m":"Unknown";
+ $("gpsAlt").textContent=Number.isFinite(c.altitude)?Math.round(c.altitude)+" m":"—";
+ $("gpsTime").textContent="Captured: "+new Date(position.timestamp).toLocaleString();
+ if(gpsMarker)map.removeLayer(gpsMarker);
+ if(gpsCircle)map.removeLayer(gpsCircle);
+ gpsMarker=L.marker([lat,lon],{icon:gpsIcon}).addTo(map).bindPopup("Captured GPS location");
+ if(Number.isFinite(accuracy)&&accuracy>0){
+  gpsCircle=L.circle([lat,lon],{radius:accuracy,color:"#087f8c",fillColor:"#13b8c5",fillOpacity:.13,weight:2}).addTo(map);
+ }
+ if(centerMap)map.setView([lat,lon],Math.max(map.getZoom(),15));
+ setStatus("GPS acquired · ±"+(Number.isFinite(accuracy)?Math.round(accuracy):"?")+" m");
+}
+$("gpsBtn").addEventListener("click",()=>{
+ if(!navigator.geolocation){$("gpsTime").textContent="Geolocation is not supported by this browser.";return}
+ setStatus("Requesting GPS…");
+ navigator.geolocation.getCurrentPosition(p=>captureGps(p,true),handleGpsError,geoOptions());
+});
+$("stopGps").addEventListener("click",()=>{
+ if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}
+ setStatus("GPS tracking stopped");
+});
+$("useGps").addEventListener("click",()=>{
+ if(!gpsPosition){alert("Capture GPS or select a point on the map first.");return}
+ $("startPoint").value="gps";
+ map.setView([gpsPosition.lat,gpsPosition.lon],15);
+});
+$("copyGps").addEventListener("click",async()=>{
+ if(!gpsPosition){alert("Capture or select a location first.");return}
+ const text=fmtCoord(gpsPosition.lat)+", "+fmtCoord(gpsPosition.lon);
+ try{await navigator.clipboard.writeText(text);setStatus("Coordinates copied")}
+ catch(e){prompt("Copy coordinates:",text)}
+});
+
+/* Road routing */
+function getStartPoint(){
+ const value=$("startPoint").value;
+ if(value==="gps"){
+  if(!gpsPosition)throw new Error("Capture GPS or click the map to choose a start point.");
+  return [gpsPosition.lat,gpsPosition.lon];
+ }
+ return value.split(",").map(Number);
+}
+function formatDuration(seconds){
+ if(!Number.isFinite(seconds)||seconds<0)return "Unavailable";
+ const m=Math.round(seconds/60);
+ return m<60?m+" min":Math.floor(m/60)+" h "+(m%60)+" min";
+}
+function clearRouteData(){
+ stopMovement();
+ elevationRequestId++;
+ if(routingControl){map.removeControl(routingControl);routingControl=null}
+ routeCoordinates=[];routeCumulative=[];routeLengthMetres=0;travelledMetres=0;
+ $("routeDistance").textContent="—";
+ $("routeTime").textContent="—";
+ $("directions").textContent="Route cleared.";
+ $("elevNote").textContent="Plan a route to sample terrain elevations.";
+ $("tripProgress").textContent="0%";
+ $("tripTravelled").textContent="0 km";
+ $("tripState").textContent="Ready to travel";
+ $("tripMessage").textContent="Calculate a road route, then start the animated journey.";
+ if(carMarker){map.removeLayer(carMarker);carMarker=null}
+ if(elevChart){elevChart.destroy();elevChart=null}
+}
+$("clearRoute").addEventListener("click",()=>{
+ clearRouteData();
+ setStatus("Route cleared");
+});
+$("routeBtn").addEventListener("click",planRoute);
+$("fitBtn").addEventListener("click",()=>{
+ const points=[];
+ if(destinationMarker)points.push(destinationMarker.getLatLng());
+ if(gpsMarker)points.push(gpsMarker.getLatLng());
+ routeCoordinates.forEach(p=>points.push(L.latLng(p[0],p[1])));
+ if(points.length)map.fitBounds(L.latLngBounds(points).pad(.12));
+ else map.setView(DEFAULT_VIEW,DEFAULT_ZOOM);
+});
+
+function planRoute(){
+ let start,d;
+ try{start=getStartPoint();d=selectedDestination()}
+ catch(error){alert(error.message);return}
+ if(Math.abs(start[0]-d.lat)<0.00001&&Math.abs(start[1]-d.lon)<0.00001){
+  alert("The start and destination are almost identical.");return;
+ }
+ clearRouteData();
+ $("directions").textContent="Calculating road route…";
+ $("routeDistance").textContent="Calculating…";
+ $("routeTime").textContent="Calculating…";
+ $("routeBtn").disabled=true;
+ setStatus("Calculating road route…");
+
+ routingControl=L.Routing.control({
+  waypoints:[L.latLng(start[0],start[1]),L.latLng(d.lat,d.lon)],
+  routeWhileDragging:false,showAlternatives:false,addWaypoints:false,
+  draggableWaypoints:false,fitSelectedRoutes:true,show:false,
+  createMarker:()=>null,
+  router:L.Routing.osrmv1({serviceUrl:"https://router.project-osrm.org/route/v1",profile:"driving"}),
+  lineOptions:{styles:[{color:"#087f8c",opacity:.95,weight:6}]}
+ }).addTo(map);
+
+ routingControl.on("routesfound",event=>{
+  $("routeBtn").disabled=false;
+  const route=event.routes&&event.routes[0];
+  if(!route){$("directions").textContent="No route returned.";return}
+  routeCoordinates=(route.coordinates||[]).map(p=>[p.lat,p.lng]);
+  prepareRouteDistances();
+  $("routeDistance").textContent=Number.isFinite(route.summary.totalDistance)?(route.summary.totalDistance/1000).toFixed(1)+" km":"Unavailable";
+  $("routeTime").textContent=formatDuration(route.summary.totalTime);
+  const instructions=route.instructions||[];
+  if(instructions.length){
+   const list=document.createElement("ol");
+   instructions.forEach(item=>{
+    const li=document.createElement("li");
+    const dist=Number(item.distance);
+    li.textContent=(item.text||"Continue along the route")+
+     (Number.isFinite(dist)&&dist>0?" ("+(dist>=1000?(dist/1000).toFixed(1)+" km":Math.round(dist)+" m")+")":"");
+    list.appendChild(li);
+   });
+   $("directions").replaceChildren(document.createTextNode(d.name),list);
+  }else{$("directions").textContent="Route found, but turn-by-turn directions were not returned."}
+  createCarMarker();
+  $("tripState").textContent="Road route ready";
+  $("tripMessage").textContent="Press Start movement to animate the car along this route.";
+  setStatus("Route ready · movement available");
+  sampleRouteElevation(routeCoordinates);
+ });
+ routingControl.on("routingerror",error=>{
+  $("routeBtn").disabled=false;
+  $("routeDistance").textContent="Unavailable";
+  $("routeTime").textContent="Unavailable";
+  $("directions").textContent="Could not calculate the road route. Check your internet connection or choose another destination.";
+  $("tripMessage").textContent="No road route was returned, so movement cannot start.";
+  setStatus("Routing unavailable");
+  console.warn("Routing error",error);
+ });
+}
+
+/* GPX export */
+$("exportGpx").addEventListener("click",()=>{
+ if(routeCoordinates.length<2){alert("Plan a route first.");return}
+ const points=routeCoordinates.map(([lat,lon])=>'<trkpt lat="'+lat+'" lon="'+lon+'"></trkpt>').join("\n");
+ const gpx='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="GBoS GEOAI" xmlns="http://www.topografix.com/GPX/1/1">\n<trk><name>GBoS GEOAI road route</name><trkseg>\n'+points+'\n</trkseg></trk></gpx>';
+ downloadFile(gpx,"gbos-geoai-route.gpx","application/gpx+xml");
+});
+function downloadFile(content,filename,type){
+ const blob=new Blob([content],{type});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+/* ROAD MOVEMENT ANIMATION
+ Distances are calculated along the actual OSRM route geometry.
+ The speed control changes the illustrative playback speed.
+*/
+function prepareRouteDistances(){
+ routeCumulative=[];
+ let total=0;
+ routeCoordinates.forEach((p,i)=>{
+  if(i>0)total+=map.distance(L.latLng(routeCoordinates[i-1][0],routeCoordinates[i-1][1]),L.latLng(p[0],p[1]));
+  routeCumulative.push(total);
+ });
+ routeLengthMetres=total;
+ travelledMetres=0;
+}
+function createCarMarker(){
+ if(carMarker)map.removeLayer(carMarker);
+ if(routeCoordinates.length<2)return;
+ carMarker=L.marker(routeCoordinates[0],{
+  icon:L.divIcon({className:"",html:'<div class="car-marker">🚗</div>',iconSize:[38,38],iconAnchor:[19,19]}),
+  zIndexOffset:1000,interactive:true
+ }).addTo(map).bindTooltip("Animated road journey");
+ updateTripStats();
+}
+function routePointAt(distance){
+ if(routeCoordinates.length<2)return null;
+ const target=Math.max(0,Math.min(distance,routeLengthMetres));
+ let lo=0,hi=routeCumulative.length-1;
+ while(lo<hi){
+  const mid=Math.floor((lo+hi)/2);
+  if(routeCumulative[mid]<target)lo=mid+1;else hi=mid;
+ }
+ const i=Math.max(1,lo);
+ const d0=routeCumulative[i-1],d1=routeCumulative[i];
+ const fraction=d1===d0?0:(target-d0)/(d1-d0);
+ const a=routeCoordinates[i-1],b=routeCoordinates[i];
+ return [a[0]+(b[0]-a[0])*fraction,a[1]+(b[1]-a[1])*fraction];
+}
+function updateTripStats(){
+ const progress=routeLengthMetres>0?Math.min(100,travelledMetres/routeLengthMetres*100):0;
+ $("tripProgress").textContent=Math.round(progress)+"%";
+ $("tripTravelled").textContent=(travelledMetres/1000).toFixed(1)+" km";
+}
+function stopMovement(){
+ moving=false;
+ if(animationFrame!==null)cancelAnimationFrame(animationFrame);
+ animationFrame=null;lastAnimationTimestamp=null;
+}
+function movementTick(timestamp){
+ if(!moving)return;
+ if(lastAnimationTimestamp===null)lastAnimationTimestamp=timestamp;
+ const dt=Math.min(100,timestamp-lastAnimationTimestamp)/1000;
+ lastAnimationTimestamp=timestamp;
+
+ // Base rate is for illustrative animation only; it is not real vehicle speed.
+ const speedMultiplier=Number($("speed").value);
+ const metresPerSecond=routeLengthMetres/45*speedMultiplier;
+ travelledMetres+=metresPerSecond*dt;
+
+ if(travelledMetres>=routeLengthMetres){
+  travelledMetres=routeLengthMetres;
+  const end=routePointAt(travelledMetres);
+  if(end&&carMarker)carMarker.setLatLng(end);
+  updateTripStats();
+  stopMovement();
+  $("tripState").textContent="Journey completed";
+  $("tripMessage").textContent="The animated car reached the destination. Press Restart to replay.";
+  setStatus("Animated journey complete");
+  return;
+ }
+
+ const point=routePointAt(travelledMetres);
+ if(point&&carMarker)carMarker.setLatLng(point);
+ updateTripStats();
+
+ if(point&&$("followCar").checked){
+  const zoom=Math.max(map.getZoom(),12);
+  map.setView(point,zoom,{animate:false});
+ }
+
+ $("tripState").textContent="Car moving along road";
+ $("tripMessage").textContent="Animation is following the calculated road geometry.";
+ animationFrame=requestAnimationFrame(movementTick);
+}
+function startMovement(){
+ if(routeCoordinates.length<2||routeLengthMetres<=0){
+  alert("Calculate a road route first, then start movement.");
+  return;
+ }
+ if(travelledMetres>=routeLengthMetres)travelledMetres=0;
+ if(carMarker){
+  const p=routePointAt(travelledMetres);
+  if(p)carMarker.setLatLng(p);
+ }
+ moving=true;
+ lastAnimationTimestamp=null;
+ $("tripState").textContent="Car moving";
+ $("tripMessage").textContent="The marker follows the route geometry. Adjust speed as needed.";
+ setStatus("Animated road journey running");
+ animationFrame=requestAnimationFrame(movementTick);
+}
+$("startMove").addEventListener("click",startMovement);
+$("pauseMove").addEventListener("click",()=>{
+ if(moving){
+  stopMovement();
+  $("tripState").textContent="Journey paused";
+  $("tripMessage").textContent="Press Start movement to continue from the current position.";
+  setStatus("Journey paused");
+ }else if(routeCoordinates.length>=2&&travelledMetres<routeLengthMetres){
+  startMovement();
+ }
+});
+$("resetMove").addEventListener("click",()=>{
+ stopMovement();
+ travelledMetres=0;
+ const p=routePointAt(0);
+ if(p&&carMarker)carMarker.setLatLng(p);
+ updateTripStats();
+ $("tripState").textContent="Journey reset";
+ $("tripMessage").textContent="Press Start movement to replay the route.";
+ setStatus("Movement reset");
+});
+$("speed").addEventListener("input",()=>{
+ $("speedLabel").textContent=$("speed").value+"×";
+});
+
+/* Weather */
+async function loadWeather(lat,lon){
+ $("weatherNote").textContent="Loading forecast…";
+ try{
+  const url="https://api.open-meteo.com/v1/forecast?latitude="+encodeURIComponent(lat)+
+   "&longitude="+encodeURIComponent(lon)+
+   "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max"+
+   "&current=temperature_2m,wind_speed_10m,relative_humidity_2m"+
+   "&timezone=Africa%2FBanjul&forecast_days=5";
+  const response=await fetch(url);
+  if(!response.ok)throw new Error("Weather HTTP "+response.status);
+  const data=await response.json();
+  $("temperature").textContent=Number.isFinite(data.current?.temperature_2m)?data.current.temperature_2m+" °C":"—";
+  $("wind").textContent=Number.isFinite(data.current?.wind_speed_10m)?data.current.wind_speed_10m+" km/h":"—";
+  if(weatherChart)weatherChart.destroy();
+  weatherChart=new Chart($("weatherChart"),{
+   type:"line",
+   data:{labels:data.daily.time.map(d=>d.slice(5)),datasets:[
+    {label:"Maximum °C",data:data.daily.temperature_2m_max,borderColor:"#e7a83e",backgroundColor:"#e7a83e22",tension:.3,spanGaps:true},
+    {label:"Minimum °C",data:data.daily.temperature_2m_min,borderColor:"#1769aa",backgroundColor:"#1769aa22",tension:.3,spanGaps:true}
+   ]},
+   options:{responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+    plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}},
+    scales:{x:{ticks:{font:{size:9}}},y:{title:{display:true,text:"Temperature (°C)"},ticks:{font:{size:9}}}}
+   }
+  });
+  $("weatherNote").textContent="Five-day forecast · precipitation probability today: "+
+   (data.daily.precipitation_probability_max?.[0]??"unavailable")+
+   "%. Model output, not an official warning.";
+ }catch(error){
+  $("weatherNote").textContent="Weather is unavailable. Check your connection and retry.";
+  console.warn("Weather error",error);
+ }
+}
+
+/* Elevation profile with small batches and fallback service */
+const ELEVATION_ENDPOINTS=[
+ {name:"OpenTopoData",url:"https://api.opentopodata.org/v1/srtm90m?locations="},
+ {name:"Open-Elevation",url:"https://api.open-elevation.com/api/v1/lookup?locations="}
+];
+async function fetchElevationBatch(points){
+ const locations=points.map(p=>p[0]+","+p[1]).join("|");
+ for(const service of ELEVATION_ENDPOINTS){
+  try{
+   const response=await fetch(service.url+encodeURIComponent(locations),{headers:{Accept:"application/json"}});
+   if(!response.ok)throw new Error("HTTP "+response.status);
+   const data=await response.json();
+   if(!Array.isArray(data.results)||data.results.length!==points.length)throw new Error("Unexpected sample count");
+   return data.results.map(item=>Number.isFinite(Number(item.elevation))?Number(item.elevation):null);
+  }catch(error){console.warn(service.name+" failed",error)}
+ }
+ throw new Error("No elevation service returned usable data");
+}
+async function fetchElevations(points){
+ const values=[];
+ for(let i=0;i<points.length;i+=12){
+  values.push(...await fetchElevationBatch(points.slice(i,i+12)));
+ }
+ return values;
+}
+async function loadPointElevation(lat,lon){
+ $("elevation").textContent="Loading…";
+ try{
+  const values=await fetchElevations([[lat,lon]]);
+  $("elevation").textContent=Number.isFinite(values[0])?Math.round(values[0])+" m":"No data";
+ }catch(error){
+  $("elevation").textContent="Unavailable";
+  console.warn("Point elevation error",error);
+ }
+}
+function evenlySpacedRouteSamples(coords,maxSamples=35){
+ if(!Array.isArray(coords)||coords.length<2)return [];
+ const samples=[],count=Math.min(maxSamples,coords.length);
+ for(let i=0;i<count;i++){
+  const p=coords[Math.round(i*(coords.length-1)/(count-1))];
+  if(p&&Number.isFinite(p[0])&&Number.isFinite(p[1])){
+   if(!samples.length||samples[samples.length-1][0]!==p[0]||samples[samples.length-1][1]!==p[1])samples.push([p[0],p[1]]);
+  }
+ }
+ return samples;
+}
+function cumulativeSampleDistances(coords){
+ const distances=[];let total=0;
+ coords.forEach((p,i)=>{
+  if(i>0)total+=map.distance(L.latLng(coords[i-1][0],coords[i-1][1]),L.latLng(p[0],p[1]));
+  distances.push(total/1000);
+ });
+ return distances;
+}
+function drawElevationChart(samples,values){
+ const distances=cumulativeSampleDistances(samples);
+ const valid=values.filter(Number.isFinite);
+ if(valid.length<2)throw new Error("Insufficient valid elevation samples");
+ if(elevChart)elevChart.destroy();
+ elevChart=new Chart($("elevChart"),{
+  type:"line",
+  data:{labels:distances.map(d=>d.toFixed(1)),datasets:[{
+   label:"Elevation (m)",data:values,borderColor:"#087f8c",
+   backgroundColor:"#087f8c22",fill:true,tension:.2,pointRadius:2,spanGaps:false
+  }]},
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+   plugins:{legend:{display:false},tooltip:{callbacks:{
+    title:items=>items.length?"Route distance: "+items[0].label+" km":"",
+    label:item=>Number.isFinite(item.raw)?"Elevation: "+Math.round(item.raw)+" m":"No elevation sample"
+   }}},
+   scales:{x:{title:{display:true,text:"Distance along route (km)"},ticks:{maxTicksLimit:6,font:{size:9}}},
+    y:{title:{display:true,text:"Elevation (m)"},ticks:{font:{size:9}}}}
+  }
+ });
+}
+async function sampleRouteElevation(coords){
+ const requestId=++elevationRequestId;
+ const samples=evenlySpacedRouteSamples(coords);
+ if(samples.length<2){$("elevNote").textContent="Not enough route coordinates to sample elevation.";return}
+ $("elevNote").textContent="Sampling "+samples.length+" terrain locations…";
+ try{
+  const values=await fetchElevations(samples);
+  if(requestId!==elevationRequestId)return;
+  drawElevationChart(samples,values);
+  const valid=values.filter(Number.isFinite);
+  $("elevNote").textContent="Approximate terrain profile · "+valid.length+" of "+samples.length+
+   " samples available · range "+Math.round(Math.min(...valid))+"–"+Math.round(Math.max(...valid))+
+   " m. Public elevation data, not survey-grade.";
+  if(valid.length<samples.length)$("elevNote").textContent+=" Missing samples are shown as gaps.";
+ }catch(error){
+  if(requestId!==elevationRequestId)return;
+  $("elevNote").textContent="Route elevation is temporarily unavailable because public elevation services failed. The road route and animated movement can still work.";
+  console.warn("Route elevation error",error);
+ }
+}
+
+/* Map click selects a manual start; this is not a GPS fix. */
+map.on("click",event=>{
+ const lat=event.latlng.lat,lon=event.latlng.lng;
+ if(!confirm("Use this map point as the route start?\n"+fmtCoord(lat)+", "+fmtCoord(lon)))return;
+ gpsPosition={lat,lon,accuracy:null,altitude:null,timestamp:Date.now()};
+ $("gpsLat").textContent=fmtCoord(lat);
+ $("gpsLon").textContent=fmtCoord(lon);
+ $("gpsAcc").textContent="Map point";
+ $("gpsAlt").textContent="—";
+ $("gpsTime").textContent="Selected manually from map; not a GPS fix.";
+ $("startPoint").value="gps";
+ if(gpsMarker)map.removeLayer(gpsMarker);
+ if(gpsCircle){map.removeLayer(gpsCircle);gpsCircle=null}
+ gpsMarker=L.marker([lat,lon],{icon:gpsIcon}).addTo(map).bindPopup("Selected map start point").openPopup();
+ setStatus("Map start point selected");
+});
+
+window.addEventListener("resize",()=>map.invalidateSize());
+
+/* Initial dashboard */
+fillDestinationOptions();
+addAllSiteMarkers();
+renderSiteList();
+renderGallery();
+updateDestination();
+setTimeout(()=>map.invalidateSize(),250);
+</script>
+</body>
+</html>
